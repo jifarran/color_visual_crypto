@@ -1,7 +1,7 @@
 # coding=utf-8
 from skimage import io
 from time import time
-from Shamir.shamir import generarSecretos, juntarSecretos
+from shamir import generarSecretos, juntarSecretos
 
 def formatoValido(ruta):
     ruta = ruta[::-1]
