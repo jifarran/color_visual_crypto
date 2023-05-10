@@ -1,5 +1,5 @@
 # ALGORITMO DE CIFRADO AES128
-# GRUPO 1
+
 from math import ceil
 from copy import deepcopy
 
