@@ -5,8 +5,8 @@ from random import randint
 from galois import GF
 from bitarray import bitarray
 from bitarray.util import ba2int, int2ba
-from CBC.cbc import cifradocbd, descifradocbc
-from ConversorImagen.conversorImagenes import pasarABits, pasarListaBloqueBytesACadenaBits, pasarCadenaBitsAListaBits, \
+from cbc import cifradocbd, descifradocbc
+from conversorImagenes import pasarABits, pasarListaBloqueBytesACadenaBits, pasarCadenaBitsAListaBits, \
     pasarABytes, convertirBytesAMatrizBytes
 
 FF = GF(2**64)
