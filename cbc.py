@@ -1,6 +1,6 @@
 from bitarray.util import ba2int
 from bitarray import bitarray
-from AES128.aes128 import aes128, Descifrar
+from aes128 import aes128, Descifrar
 from Crypto.Cipher import AES
 from binascii import a2b_qp, b2a_qp
 
