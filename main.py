@@ -7,12 +7,10 @@ from shamir import generarSecretos, juntarSecretos
 def formatoValido(ruta):
     ruta = ruta[::-1]
     extension = ''
-
     for i in ruta:
         if (i == '.'):
             break
         extension = extension + i
-
     if (extension == 'gnp' or extension == 'mpp'):
         return True
     else:
@@ -25,7 +23,6 @@ def menuPrincipal():
     print("\t\t2. Reconstruct the original shared image")
     print("\t\t0. Exit")
     opcion = input("\n\tSelect an option: ")
-
     return int(opcion)
 
 def dividirImagenEnSecretos():
@@ -42,7 +39,6 @@ def dividirImagenEnSecretos():
             break
         except ValueError:
             print("The number must be integer, try again")
-
     while True:
         try:
             ruta = input("Introduce the path to the original image: ")
@@ -50,7 +46,6 @@ def dividirImagenEnSecretos():
             break
         except:
             print("The path is not valid, try again")
-
     if(formatoValido(ruta) == False):
         print("The image format is not valid, it should be PPM or PNG")
     else:
@@ -62,7 +57,6 @@ def dividirImagenEnSecretos():
         print("The shares of the images are saved")
         print("The computation time has been", tiempo, "seconds")
 
-
 def descifrarImagen():
     while True:
         try:
@@ -70,9 +64,7 @@ def descifrarImagen():
             break
         except ValueError:
             print("The number must be integer, try again")
-
     imagenes = []
-
     for i in range(k):
         while True:
             try:
@@ -82,7 +74,6 @@ def descifrarImagen():
             except:
                 print("The path is not valid, try again")
         imagenes.append(imagen)
-
     print("Reconstructing the original image, it may take some minutes...")
     tiempo_inicial = time()
     imagenOriginal = juntarSecretos(imagenes)
@@ -93,7 +84,6 @@ def descifrarImagen():
     io.imsave('original.png', imagenOriginal)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     opcion = -1
 
