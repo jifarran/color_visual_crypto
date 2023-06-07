@@ -5,7 +5,6 @@ from random import randint
 from galois import GF
 from bitarray import bitarray
 from bitarray.util import ba2int, int2ba
-from cbc import cifradocbd, descifradocbc
 from conversorImagenes import pasarABits, pasarListaBloqueBytesACadenaBits, \
     pasarCadenaBitsAListaBits, pasarABytes, convertirBytesAMatrizBytes
 
@@ -58,7 +57,6 @@ def elementoNeutroCF():
     return generarElemento("00000000000000000000000000000000\
                            00000000000000000000000000000001")
 
-
 def sacarClave(imagenes,vectoresIncializacion): #Hay que lanzar una excepcion que salte si el sistema no tiene solucion (no se han reunido los suficientes usuarios)
     A = []
     B = []
@@ -94,8 +92,8 @@ def generarSecretos(img, k, n):
     coeficientesP2 = generarElementosAleatorios(k - 1)
     imagenesP1 = generarImagenesPolinomio(coeficientesP1, vectoresInicializacion, bloque1bits[0])
     imagenesP2 = generarImagenesPolinomio(coeficientesP2, vectoresInicializacion, bloque1bits[1])
-    p1 = sacarElementoCuerpoFinito(imagenesP1[0])
-    p2 = sacarElementoCuerpoFinito(imagenesP2[0])
+    #p1 = sacarElementoCuerpoFinito(imagenesP1[0])
+    #p2 = sacarElementoCuerpoFinito(imagenesP2[0])
     clave = sacarElementoCuerpoFinito(bloque1bits[0]) + \
         sacarElementoCuerpoFinito(bloque1bits[1])
     imgb = pasarListaBloqueBytesACadenaBits(imagenBits)
