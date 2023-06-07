@@ -1,128 +1,61 @@
-# ALGORITMO DE CIFRADO AES128
-
-from math import ceil
 from copy import deepcopy
-
-"""
-    Bienvenido a la librería de cifrado y descifrado de AES 128. Esta librería cuenta con dos
-    funciones accesibles para los usuarios, una de cifrado basado en el cifrado simétrico
-    AES 128 y su correspondiente descifrado; ambas funciones están implementadas en los programas
-    aes12() y Descifrado() respectivamente. 
-
-    Autores: 
-        Ignacio Aranguren
-        Guillermo Centeno
-        David Cerezo
-        Carlos Cubo
-"""
 
 
 def aes128(mensaje, clave):
-    """
-    Función de cifrado:
-    -------------------------------------------------------------------------------------
-    -Datos de entrada: texto asici con el mensaje y con la clave
-
-    -Funcionamiento: Función principal de cifrado de datos. El usuario inserta un mensaje
-    y una clave para cifrar, ambos en texto plano.  Se realiza el proceso de cifrado AES
-    128 según su estándar.Finalmente se devuelve al usuario el mensaje cifrado en formato
-    hexadecimal
-    .
-    -Datos de salida: texto en hexadecimal con el mensaje cifrado
-    -------------------------------------------------------------------------------------
-"""
     matrizClave = [[0] * 4 for i in range(4)]
     matrizAux = [[0] * 4 for i in range(4)]
     menCifrado = ''
-
     _getClave(matrizClave, clave)
     matrizAux = deepcopy(matrizClave)
-
     posbloque = 0
-
     bloque = [[0] * 4 for i in range(4)]
     matrizClave = deepcopy(matrizAux)
     mensajeEnBytes = pasarAbytes(mensaje)
-
     for j in range(4):
         for i in range(4):
             bloque[i][j] = mensajeEnBytes[posbloque]
             posbloque = posbloque + 1
-
-    # metodo cifrado
-
-    # XOR bloque - clave
     _AddRoundKey(bloque, matrizClave)
-    # Vueltas del cifrado
+    # AES rounds 
     for vuelta in range(9):
         _SubBytes(bloque)
         _ShiftRows(bloque)
         bloque = _MixColumns(bloque)
         matrizClave = _ExpansionK(matrizClave, vuelta)
         _AddRoundKey(bloque, matrizClave)
-
-    # Ultima vuelta del cifrado
+    # last round 
     _SubBytes(bloque)
     _ShiftRows(bloque)
     matrizClave = _ExpansionK(matrizClave, 9)
     _AddRoundKey(bloque, matrizClave)
-
     for columna in range(4):
         for fila in range(4):
             valor = hex(bloque[fila][columna])[2:]
             if len(valor) < 2:
                 valor = '0' + valor
             menCifrado = menCifrado + valor
-
     menCifrado = pasarHexAbits(menCifrado)
-    #print("\nSu mensaje cifrado es: ")
-    #print(menCifrado) Esta en hexadecimal, pasar a binario
-
     return menCifrado
 
-
 def Descifrar(mensaje, clave):
-    """
-    Función de descifrado:
-    ------------------------------------------------------------------------------------
-    -Datos de entrada: Texto en hexadecimal con el mensaje cifrado y clave en ascii
-
-    -Funcionamiento: Función principal de descifrado de datos (funcionamiento inverso del
-     descifrado). El usuario inserta un mensaje y una clave para cifrar, ambos en texto
-    plano.  Se realiza el proceso de descifrado AES 128 según su estándar.Finalmente se
-    devuelve al usuario el mensaje cifrado en formato hexadecimal.
-
-    -Datos de salida: Texto en ascii descifrado
-
-    ------------------------------------------------------------------------------------
-"""
-
     matrizClave = [[0] * 4 for i in range(4)]
     menCifrado = ''
     claves = [[[0] * 4 for i in range(4)]] * 11
-
     _getClave(matrizClave, clave)
-
-    # Generacion claves
+    # key generation 
     claves[0] = deepcopy(matrizClave)
     for x in range(1, 11):
         claves[x] = _ExpansionK(claves[x - 1], x - 1)
-
     posbloque = 0
-
     bloque = [[0] * 4 for i in range(4)]
     mensajeBytes = pasarAbytes(mensaje)
     for j in range(4):
         for i in range(4):
             bloque[i][j] = mensajeBytes[posbloque]
             posbloque = posbloque + 1
-
-    # metodo cifrado
-
     _AddRoundKey(bloque, claves[10])
     _InvShiftRows(bloque)
     _InvSubBytes(bloque)
-
     vuelta = 9
     for i in range(9):
         _AddRoundKey(bloque, claves[vuelta])
@@ -130,45 +63,23 @@ def Descifrar(mensaje, clave):
         _InvShiftRows(bloque)
         _InvSubBytes(bloque)
         vuelta = vuelta - 1
-
     _AddRoundKey(bloque, claves[0])
-
     for columna in range(4):
         for fila in range(4):
             valor = format(bloque[fila][columna], '08b')
             menCifrado = menCifrado + valor
-
-
     return menCifrado
 
+
 def _getClave(mclave, textclave):
-    """
-    Función_getClave():
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     pos = 0
     claveBytes = pasarAbytes(textclave)
-
     for j in range(4):
         for i in range(4):
             mclave[i][j] = claveBytes[pos]
             pos = pos + 1
 
-
 def _SubBytes(estado):
-    """
-    Funcion SubBytes
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-
-"""
     matrizSubBytes = [[' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'],
                       ['0', 0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB,
                        0x76],
@@ -202,7 +113,6 @@ def _SubBytes(estado):
                        0xDF],
                       ['F', 0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB,
                        0x16]]
-
     for fila in range(4):
         for columna in range(4):
             valor = hex(estado[fila][columna])[2:]
@@ -217,17 +127,7 @@ def _SubBytes(estado):
                     colBusq = car2
             estado[fila][columna] = matrizSubBytes[filBusq][colBusq]
 
-
 def _ShiftRows(estado):
-    """
-    Funcion ShiftRows
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
-
     for fila in range(1, 4):
         for i in range(1, fila + 1):
             primero = estado[fila][0]
@@ -235,23 +135,12 @@ def _ShiftRows(estado):
                 estado[fila][x] = estado[fila][x + 1]
             estado[fila][3] = primero
 
-
 def _MixColumns(estado):
-    """
-    Funcion MixColumns
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     gf = [[0x02, 0x03, 0x01, 0x01],
           [0x01, 0x02, 0x03, 0x01],
           [0x01, 0x01, 0x02, 0x03],
           [0x03, 0x01, 0x01, 0x02]]
-
     resultado = [[0] * 4 for i in range(4)]
-
     for columna in range(4):
         resultado[0][columna] = _Galois(estado[0][columna], gf[0][0]) ^ _Galois(estado[1][columna], gf[0][1]) ^ _Galois(
             estado[2][columna], gf[0][2]) ^ _Galois(estado[3][columna], gf[0][3])
@@ -261,19 +150,9 @@ def _MixColumns(estado):
             estado[2][columna], gf[2][2]) ^ _Galois(estado[3][columna], gf[2][3])
         resultado[3][columna] = _Galois(estado[0][columna], gf[3][0]) ^ _Galois(estado[1][columna], gf[3][1]) ^ _Galois(
             estado[2][columna], gf[3][2]) ^ _Galois(estado[3][columna], gf[3][3])
-
     return resultado
 
-
 def _Galois(celEstado, celGalois):
-    """
-    Funcion para multiplicar en un cuerpo finito
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     result = 0
     ultbit = 0
     while (celGalois != 0):
@@ -287,79 +166,32 @@ def _Galois(celEstado, celGalois):
         celGalois = celGalois >> 1
     return result
 
-
 def _AddRoundKey(estado, clave):
-    """
-    Funcion AddRoundKey
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     for fila in range(4):
         for columna in range(4):
             estado[fila][columna] = estado[fila][columna] ^ clave[fila][columna]
 
-
 def _ExpansionK(clave, vuelta):
-    """
-    Funcion Expansion de claves
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     rcon = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36]
-
     nextClave = [[0] * 4 for i in range(4)]
     nextClave = deepcopy(clave)
-
     _RotWord(nextClave)
     _SubBytes(nextClave)
-
-    # XOR
     for fila in range(4):
         nextClave[fila][0] = nextClave[fila][0] ^ clave[fila][0]
-
-    # RCON
     nextClave[0][0] = nextClave[0][0] ^ rcon[vuelta]
-
-    # XOR Resto de clave
     for columna in range(3):
         for fila2 in range(4):
             nextClave[fila2][columna + 1] = nextClave[fila2][columna] ^ clave[fila2][columna + 1]
-
     return nextClave
 
-
 def _RotWord(nextClave):
-    """
-    Funcion RotWord
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     primero = nextClave[0][3]
-
     for fila in range(3):
         nextClave[fila][0] = nextClave[fila + 1][3]
-
     nextClave[3][0] = primero
 
-
 def _InvSubBytes(estado):
-    """
-    Funcion InvSubBytes
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     invMatrizSubBytes = [[' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'],
                          ['0', 0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7,
                           0xFB],
@@ -393,7 +225,6 @@ def _InvSubBytes(estado):
                           0x61],
                          ['F', 0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C,
                           0x7D]]
-
     for fila in range(4):
         for columna in range(4):
             valor = hex(estado[fila][columna])[2:]
@@ -408,23 +239,12 @@ def _InvSubBytes(estado):
                     colBusq = car2
             estado[fila][columna] = invMatrizSubBytes[filBusq][colBusq]
 
-
 def _InvMixColumns(estado):
-    """
-    Funcion InvMixColumns
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     gf = [[0x0E, 0x0B, 0x0D, 0x09],
           [0x09, 0x0E, 0x0B, 0x0D],
           [0x0D, 0x09, 0x0E, 0x0B],
           [0x0B, 0x0D, 0x09, 0x0E]]
-
     resultado = [[0] * 4 for i in range(4)]
-
     for columna in range(4):
         resultado[0][columna] = _Galois(estado[0][columna], gf[0][0]) ^ _Galois(estado[1][columna], gf[0][1]) ^ _Galois(
             estado[2][columna], gf[0][2]) ^ _Galois(estado[3][columna], gf[0][3])
@@ -434,30 +254,19 @@ def _InvMixColumns(estado):
             estado[2][columna], gf[2][2]) ^ _Galois(estado[3][columna], gf[2][3])
         resultado[3][columna] = _Galois(estado[0][columna], gf[3][0]) ^ _Galois(estado[1][columna], gf[3][1]) ^ _Galois(
             estado[2][columna], gf[3][2]) ^ _Galois(estado[3][columna], gf[3][3])
-
     return resultado
 
-
 def _InvShiftRows(estado):
-    """
-    Funcion InvShiftRows
-    -------------------------------------------------------------------------------
-
-    WARNING: Esta es una función privada y no debería ser invicada directamente.
-
-    -------------------------------------------------------------------------------
-"""
     for fila in range(1, 4):
         for i in range(1, 5 - fila):
             primero = estado[fila][0]
             for x in range(3):
                 estado[fila][x] = estado[fila][x + 1]
             estado[fila][3] = primero
-#nuevo
+
 def pasarAbytes(cadena):
     listaBytes = []
     posicion = 0
-
     byte = ''
     for i in range(len(cadena)):
         byte = byte + str(cadena[i])
@@ -467,7 +276,6 @@ def pasarAbytes(cadena):
             byte = ''
         else:
             posicion = posicion + 1
-
     return listaBytes
 
 def pasarHexAbits(cadenaHex):
@@ -476,5 +284,4 @@ def pasarHexAbits(cadenaHex):
     while(pos < len(cadenaHex)):
         cadenabits = cadenabits + str(format(int(cadenaHex[pos] + cadenaHex[pos + 1], 16), '08b'))
         pos = pos + 2
-
     return cadenabits
