@@ -2,20 +2,20 @@
 
 Sharing of secret color images by using the Shamir scheme 
 
-## Required packages: 
-skimage, numpy, galois, Crypto, bitarray, binascii, random, math, copy, time
+## Required packages 
+skimage, numpy, galois, Crypto, bitarray, binascii, random, math, copy, time 
 
-## Usage: 
-Execute main.py and follow the instructionas 
+## Usage 
+Execute main.py and follow the instructions 
 
-## Support
+## Support 
 Contact to jifarran@uva.es 
 
-## Roadmap
+## Roadmap 
 Some optimization in the conversion procedures to speed-up the program may be performed 
 
 ## Authors 
 David Cerezo and José Ignacio Farrán 
 
-## License
+## License 
 GNU's General Public License 
