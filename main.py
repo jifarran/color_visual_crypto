@@ -3,6 +3,7 @@ from skimage import io
 from time import time
 from shamir import generarSecretos, juntarSecretos
 
+
 def formatoValido(ruta):
     ruta = ruta[::-1]
     extension = ''
@@ -18,78 +19,79 @@ def formatoValido(ruta):
         return False
 
 def menuPrincipal():
-    print("\t\nInfo: Este programa solo es capaz de cifrar imágenes en formato ppm y png")
-    print("\tCompartición de secretos mediante imágenes\n")
-    print("\t\t1. Dividir una Imágen en Secretos")
-    print("\t\t2. Juntar Imágenes para Obtener la Original")
-    print("\t\t0. Salir")
-    opcion = input("\n\tSeleccione una opción: ")
+    print("\t\nInfo: This program only works with PPM and PNG images")
+    print("\tColor image secret sharing\n")
+    print("\t\t1. Generate the shared images")
+    print("\t\t2. Reconstruct the original shared image")
+    print("\t\t0. Exit")
+    opcion = input("\n\tSelect an option: ")
 
     return int(opcion)
 
 def dividirImagenEnSecretos():
     while True:
         try:
-            n = int(input("Introduzca el Número de sombras de la Imágen que se desea que se obtengan a partir de la original: "))
+            n = int(input("Introduce the number of shares: "))
             break
         except ValueError:
-            print("Debe introducir un número entero")
+            print("The number must be integer, try again")
 
     while True:
         try:
-            k = int(input("Introduzca el mínimo de sombras necesarias para posteriormente obtener la imágen original: "))
+            k = int(input("Introduce the threshold of the secret sharing: "))
             break
         except ValueError:
-            print("Debe introducir un número entero")
+            print("The number must be integer, try again")
 
     while True:
         try:
-            ruta = input("Introduzca la ruta exacta de la imágen: ")
+            ruta = input("Introduce the path to the original image: ")
             imagen = io.imread(ruta)
             break
         except:
-            print("La ruta introducida no contiene una imágen, intentelo otra vez")
+            print("The path is not valid, try again")
 
     if(formatoValido(ruta) == False):
-        print("La imágen introducida no es un formato válido, solo se admiten formatos png y ppm")
+        print("The image format is not valid, it should be PPM or PNG")
     else:
-        print("Generando sombras de la imágen, este proceso tardará varios minutos ....")
+        print("Generating the shares, it may take some minutes...")
         tiempo_inicial = time()
         generarSecretos(imagen, k, n)
         tiempo_final = time()
         tiempo = tiempo_final - tiempo_inicial
-        print("Se han generado las sombras de la imágen en la carpeta resultadocifrado")
-        print("El tiempo de cifrado ha sido de ", tiempo, " segundos")
+        print("The shares of the images are saved")
+        print("The computation time has been", tiempo, "seconds")
 
 
 def descifrarImagen():
     while True:
         try:
-            k = int(input("Introduzca el número de imágenes mínimas necesarias  para obtener la original: "))
+            k = int(input("Introduce the threshold: "))
             break
         except ValueError:
-            print("Debe introducir un número entero")
+            print("The number must be integer, try again")
 
     imagenes = []
 
     for i in range(k):
         while True:
             try:
-                ruta=input(f"Introduzca la ruta exacta de la imagen {i + 1} : ")
+                ruta=input(f"Introduce the path to the share {i + 1} : ")
                 imagen = io.imread(ruta)
                 break
             except:
-                print("La ruta introduccida no contiene una imágen")
+                print("The path is not valid, try again")
         imagenes.append(imagen)
 
-    print("Generando imágen original, esto tardará varios minutos...")
+    print("Reconstructing the original image, it may take some minutes...")
     tiempo_inicial = time()
     imagenOriginal = juntarSecretos(imagenes)
     tiempo_final = time()
     tiempo = tiempo_final - tiempo_inicial
-    print("Se ha recuperado la imágen original, será guardada en la carpeta resultadodescifrado")
-    print("El tiempo de descifrado ha sido de ", tiempo, " segundos")
-    io.imsave('imagenes/resultadodescifrado/imagenDescifrada.png',imagenOriginal)
+    print("The original image has been reconstructed")
+    print("The computation time has been", tiempo, "seconds")
+    io.imsave('original.png', imagenOriginal)
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -102,11 +104,6 @@ if __name__ == '__main__':
         elif opcion == 2:
             descifrarImagen()
         elif opcion == 0:
-            print("Gracias por usar la aplicación")
+            print("Thank you for using this program")
         else:
-            print("Opción erronea selecion 1,2 o 0.")
-
-
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+            print("Not valid option: it must be 1, 2, or 0")
