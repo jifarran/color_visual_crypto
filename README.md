@@ -1,9 +1,8 @@
 # Color Visual Cryptography 
-
 Sharing of secret color images by using the Shamir scheme 
 
 ## Required packages 
-skimage, numpy, galois, Crypto, bitarray, binascii, random, math, copy, time 
+skimage, numpy, galois, Crypto, bitarray, random, time 
 
 ## Usage 
 Execute main.py and follow the instructions 
