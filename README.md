@@ -4,14 +4,23 @@ Sharing of secret color images by using the Shamir scheme
 
 ## Required packages: 
 skimage
+
 numpy
+
 galois
+
 Crypto
+
 bitarray
+
 binascii
+
 random
+
 math
+
 copy
+
 time
 
 ## Usage: 
